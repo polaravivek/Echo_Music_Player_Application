@@ -4,9 +4,9 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:title="All songs"
             android:id="@+id/allSongs"
-            android:icon="@drawable/ic_navigation_allsongs" />
+            android:icon="@drawable/ic_navigation_allsongs"
+            android:title="All songs" />
 
         <item
             android:title="Favorites"
