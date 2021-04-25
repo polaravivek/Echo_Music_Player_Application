@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun hasPermissions (context: Context, vararg permissions: String): Boolean{
+    private fun hasPermissions (context: Context, vararg permissions: String): Boolean{
         var hasAllPermissions = false
         for (permission in permissions){
             val res = context.checkCallingOrSelfPermission(permission)
