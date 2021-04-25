@@ -19,8 +19,8 @@ import com.vivekcorp.echoapplication.model.AudioModel
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class AllSongsFragment : Fragment() {
+
 
     var myActivity: Activity? = null
     lateinit var getSongsList: ArrayList<AudioModel>

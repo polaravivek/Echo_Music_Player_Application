@@ -128,6 +128,7 @@ class DashboardActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame, AllSongsFragment())
+            .addToBackStack("AllSongsFragment")
             .commit()
 
         supportActionBar?.title = "All Songs"
