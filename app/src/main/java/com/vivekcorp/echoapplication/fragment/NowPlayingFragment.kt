@@ -155,18 +155,6 @@ class NowPlayingFragment : Fragment() {
             date = arguments?.getLong("songDate")!!
             frag = arguments!!.getString("fragment").toString()
 
-            if (frag == "FavoritesFragment"){
-
-            }
-
-            val callback = object : OnBackPressedCallback(true){
-                override fun handleOnBackPressed() {
-
-                }
-            }
-
-            requireActivity().onBackPressedDispatcher.addCallback(callback)
-
             currentPosition = arguments!!.getInt("songPosition")
 
             fetchSongs = arguments?.getParcelableArrayList("songData")!!
@@ -185,6 +173,16 @@ class NowPlayingFragment : Fragment() {
                 currentPosition,
                 date
             )
+
+            val checkFav = DBAsyncTask(activity as Context, songEntities, 1).execute()
+            val isFav = checkFav.get()
+
+            if (isFav) {
+                fab.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.favorite_on))
+
+            } else {
+                fab.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.favorite_off))
+            }
 
             updateTextViews(
                 currentSongHelper.songTitle as String,
@@ -324,6 +322,25 @@ class NowPlayingFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        songEntities = Entities(
+            nextSong.songID,
+            nextSong.songTitle,
+            nextSong.artist,
+            nextSong.songData,
+            currentPosition,
+            nextSong.dateAdded
+        )
+
+        val checkFav = DBAsyncTask(activity as Context, songEntities, 1).execute()
+        val isFav = checkFav.get()
+
+        if (isFav) {
+            fab.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.favorite_on))
+
+        } else {
+            fab.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.favorite_off))
+        }
     }
 
     private fun clickHandler() {
@@ -461,6 +478,7 @@ class NowPlayingFragment : Fragment() {
         } else {
             if (currentSongHelper.isLoop as Boolean) {
                 currentSongHelper.isPlaying = true
+
                 val nextSong = fetchSongs[currentPosition]
                 currentSongHelper.songTitle = nextSong.songTitle
                 currentSongHelper.songPath = nextSong.songData
@@ -521,6 +539,25 @@ class NowPlayingFragment : Fragment() {
             processInformation(mediaPlayer as MediaPlayer)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+
+        songEntities = Entities(
+            nextSong.songID,
+            nextSong.songTitle,
+            nextSong.artist,
+            nextSong.songData,
+            currentPosition,
+            nextSong.dateAdded
+        )
+
+        val checkFav = DBAsyncTask(activity as Context, songEntities, 1).execute()
+        val isFav = checkFav.get()
+
+        if (isFav) {
+            fab.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.favorite_on))
+
+        } else {
+            fab.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.favorite_off))
         }
     }
 
