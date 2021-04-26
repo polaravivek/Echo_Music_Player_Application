@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.RelativeLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -20,7 +21,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class AllSongsFragment : Fragment() {
-
 
     var myActivity: Activity? = null
     lateinit var getSongsList: ArrayList<AudioModel>
@@ -51,6 +51,14 @@ class AllSongsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
 
         setHasOptionsMenu(true)
+
+        val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                activity?.finish()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
 
         layoutManager = LinearLayoutManager(activity)
 
@@ -175,4 +183,5 @@ class AllSongsFragment : Fragment() {
         }
         return tempAudioList
     }
+
 }

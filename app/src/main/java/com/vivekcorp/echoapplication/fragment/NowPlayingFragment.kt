@@ -5,17 +5,22 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
+import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.room.Room
 import com.cleveroad.audiovisualization.AudioVisualization
 import com.cleveroad.audiovisualization.DbmHandler
 import com.cleveroad.audiovisualization.GLAudioVisualizationView
 import com.vivekcorp.echoapplication.R
+import com.vivekcorp.echoapplication.database.Entities
+import com.vivekcorp.echoapplication.database.SongDatabase
 import com.vivekcorp.echoapplication.fragment.NowPlayingFragment.Statified.mediaPlayer
 import com.vivekcorp.echoapplication.model.AudioModel
 import com.vivekcorp.echoapplication.model.CurrentSongHelper
@@ -50,6 +55,8 @@ class NowPlayingFragment : Fragment() {
     lateinit var fetchSongs: ArrayList<AudioModel>
     var currentPosition = 0
 
+    lateinit var songEntities: Entities
+
     var updateSongTime = object : Runnable {
         override fun run() {
             val getCurrent = mediaPlayer?.currentPosition
@@ -61,7 +68,6 @@ class NowPlayingFragment : Fragment() {
                 second %= 60
             }
 
-            println(second)
             startTimeText.text = String.format(
                 "%d:%d",
                 minute,
@@ -83,6 +89,7 @@ class NowPlayingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_now_playing, container, false)
+
         setHasOptionsMenu(true)
 
         activity?.title = "Now Playing"
@@ -113,7 +120,6 @@ class NowPlayingFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_redirect -> {
-                println("here")
                 activity?.onBackPressed()
                 return false
             }
@@ -137,6 +143,8 @@ class NowPlayingFragment : Fragment() {
         var songTitle: String? = null
         var songArtist: String? = null
         var songId: Long? = null
+        var date: Long
+        var frag: String
 
         try {
 
@@ -144,9 +152,22 @@ class NowPlayingFragment : Fragment() {
             songTitle = arguments?.getString("songTitle")
             songArtist = arguments?.getString("songArtist")
             songId = arguments?.getInt("songId")!!.toLong()
+            date = arguments?.getLong("songDate")!!
+            frag = arguments!!.getString("fragment").toString()
+
+            if (frag == "FavoritesFragment"){
+
+            }
+
+            val callback = object : OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+
+                }
+            }
+
+            requireActivity().onBackPressedDispatcher.addCallback(callback)
 
             currentPosition = arguments!!.getInt("songPosition")
-            println("first pos $currentPosition")
 
             fetchSongs = arguments?.getParcelableArrayList("songData")!!
 
@@ -156,7 +177,14 @@ class NowPlayingFragment : Fragment() {
             currentSongHelper.songId = songId
             currentSongHelper.currentPosition = currentPosition
 
-            println(currentSongHelper.songTitle)
+            songEntities = Entities(
+                songId.toLong(),
+                songTitle.toString(),
+                songArtist.toString(),
+                path.toString(),
+                currentPosition,
+                date
+            )
 
             updateTextViews(
                 currentSongHelper.songTitle as String,
@@ -205,7 +233,7 @@ class NowPlayingFragment : Fragment() {
 
         var finalTime = mediaPlayer.duration
         var startTime = mediaPlayer.currentPosition
-        println(startTime)
+
         seekBar.max = finalTime
         startTimeText.text = String.format(
             "%d:%d",
@@ -267,10 +295,8 @@ class NowPlayingFragment : Fragment() {
 
     private fun playPrevious() {
 
-        println("previous $currentPosition")
         currentPosition -= 1
         if (currentPosition == -1) {
-            println(currentPosition)
             currentPosition = fetchSongs.size - 1
         }
         if (currentSongHelper.isPlaying) {
@@ -298,11 +324,6 @@ class NowPlayingFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        if (favouriteContent?.checkifIDExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-//            fab?.setImageDrawable(ContextCompat.getDrawable(activity!!, R.drawable.favorite_on))
-//        } else {
-//            fab?.setImageDrawable(ContextCompat.getDrawable(activity!!, R.drawable.favorite_off))
-//        }
     }
 
     private fun clickHandler() {
@@ -361,10 +382,12 @@ class NowPlayingFragment : Fragment() {
         }
 
         shuffleImageButton.setOnClickListener {
+
             var editorShuffle = activity?.getSharedPreferences(
                 MY_PREFS_SHUFFLE,
                 Context.MODE_PRIVATE
             )?.edit()
+
             var editorLoop = activity?.getSharedPreferences(MY_PREFS_LOOP, Context.MODE_PRIVATE)?.edit()
             if (currentSongHelper.isShuffle as Boolean) {
                 shuffleImageButton.setBackgroundResource(R.drawable.shuffle_white_icon)
@@ -382,10 +405,57 @@ class NowPlayingFragment : Fragment() {
                 editorLoop?.apply()
             }
         }
+
+        fab.setOnClickListener {
+            if (!DBAsyncTask(activity as Context, songEntities, 1).execute()
+                    .get()
+            ) {
+                val async =
+                    DBAsyncTask(activity as Context, songEntities, 2).execute()
+                val result = async.get()
+                if (result) {
+                    Toast.makeText(
+                        context,
+                        "song added to favourites",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    fab.setImageResource(R.drawable.favorite_on)
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Some error occurred!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    fab.setImageResource(R.drawable.favorite_off)
+                }
+            } else {
+                val async =
+                    DBAsyncTask(activity as Context, songEntities, 3).execute()
+                val result = async.get()
+
+                if (result) {
+                    Toast.makeText(
+                        context,
+                        "song removed from favorites",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    fab.setImageResource(R.drawable.favorite_off)
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Some error occured",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun onSongComplete() {
-        if (currentSongHelper.isShuffle as Boolean) {
+        if (currentSongHelper.isShuffle) {
             playNext("PlayNextLikeNormalShuffle")
             currentSongHelper.isPlaying = true
         } else {
@@ -417,16 +487,10 @@ class NowPlayingFragment : Fragment() {
                 currentSongHelper.isPlaying = true
             }
         }
-//        if (favouriteContent?.checkifIDExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-//            fab?.setImageDrawable(ContextCompat.getDrawable(activity!!, R.drawable.favorite_on))
-//        } else {
-//            fab?.setImageDrawable(ContextCompat.getDrawable(activity!!, R.drawable.favorite_off))
-//        }
     }
 
     private fun playNext(check: String) {
 
-        println("next $currentPosition")
         if (check.equals("PlayNextNormal", true)) {
             currentPosition += 1
         } else if (check.equals("PlayNextLikeNormalShuffle", true)) {
@@ -458,11 +522,6 @@ class NowPlayingFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        if (favouriteContent.checkifIDExists(currentSongHelper?.songId?.toInt() as Int) as Boolean) {
-//            fab.setImageDrawable(ContextCompat.getDrawable(activity!!, R.drawable.favorite_on))
-//        } else {
-//            fab.setImageDrawable(ContextCompat.getDrawable(activity!!, R.drawable.favorite_off))
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -498,20 +557,45 @@ class NowPlayingFragment : Fragment() {
         songArtistView.text = songArtistUpdated
     }
 
-//    override fun run() {
-//        var currentPosition = mediaPlayer!!.currentPosition
-//        val total = mediaPlayer!!.duration
-//
-//        while (mediaPlayer != null && mediaPlayer!!.isPlaying && currentPosition < total) {
-//            currentPosition = try {
-//                Thread.sleep(1000)
-//                mediaPlayer!!.currentPosition
-//            } catch (e: InterruptedException) {
-//                return
-//            } catch (e: java.lang.Exception) {
-//                return
-//            }
-//            seekBar.progress = currentPosition
-//        }
-//    }
+    class DBAsyncTask(
+        val context: Context,
+        private val songEntity: Entities,
+        private val mode: Int
+    ) :
+        AsyncTask<Void, Void, Boolean>() {
+
+        /*
+            Mode 1 -> Check DB if the book is favourite or not
+            Mode 2 -> Save the book into DB as favourite
+            Mode 3 -> Remove the favourite book
+             */
+
+        val db = Room.databaseBuilder(context, SongDatabase::class.java, "songsNew-db").build()
+
+        override fun doInBackground(vararg params: Void?): Boolean {
+
+            when (mode) {
+                1 -> {
+//                    Mode 1 -> Check DB if the book is favourite or not
+                    val song: Entities = db.songDao().getSongById(songEntity.song_id.toString())
+                    db.close()
+                    return song != null
+                }
+                2 -> {
+//                    Mode 2 -> Save the book into DB as favourite
+                    db.songDao().insertSong(songEntity)
+                    db.close()
+                    return true
+                }
+                3 -> {
+//                    Mode 3 -> Remove the favourite book
+                    db.songDao().deleteSong(songEntity)
+                    db.close()
+                    return true
+                }
+            }
+            return false
+        }
+    }
+
 }

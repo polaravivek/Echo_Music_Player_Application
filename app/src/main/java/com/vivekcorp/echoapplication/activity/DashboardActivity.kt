@@ -1,12 +1,10 @@
 package com.vivekcorp.echoapplication.activity
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.FrameLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
@@ -74,6 +72,7 @@ class DashboardActivity : AppCompatActivity() {
                             R.id.frame,
                             FavoritesFragment()
                         )
+                        .addToBackStack("FavoritesFragment")
                         .commit()
 
                     supportActionBar?.title = "Favorites songs"
@@ -83,6 +82,7 @@ class DashboardActivity : AppCompatActivity() {
                 R.id.settings -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame, SettingsFragment())
+
                         .commit()
 
                     supportActionBar?.title = "Settings"
@@ -92,6 +92,7 @@ class DashboardActivity : AppCompatActivity() {
 
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame, AboutUsFragment())
+
                         .commit()
 
                     supportActionBar?.title = "About us"
@@ -132,7 +133,7 @@ class DashboardActivity : AppCompatActivity() {
             .commit()
 
         supportActionBar?.title = "All Songs"
-        navigationView.setCheckedItem(R.id.home)
+        navigationView.setCheckedItem(R.id.allSongs)
     }
 
     override fun onBackPressed() {
