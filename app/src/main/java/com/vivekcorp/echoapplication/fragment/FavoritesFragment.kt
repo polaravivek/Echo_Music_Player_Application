@@ -34,7 +34,7 @@ class FavoritesFragment : Fragment() {
     lateinit var layoutManager: RecyclerView.LayoutManager
 
     var visibleLayout: RelativeLayout? = null
-    var noSongs: RelativeLayout? = null
+    lateinit var noSongs: RelativeLayout
 
     lateinit var recyclerAdapter: FavoriteRecyclerAdapter
 
@@ -59,13 +59,19 @@ class FavoritesFragment : Fragment() {
 
         visibleLayout = view?.findViewById(R.id.visibleLayout)
 
-        noSongs = view?.findViewById(R.id.noSongs)
+        noSongs = view.findViewById(R.id.noSongs)
 
         recyclerAllSongsView = view.findViewById(R.id.recyclerFavSongsView)
 
         myActivity = context as Activity
 
         getEntitiesList = RetrieveFavorites(activity as Context).execute().get()
+
+        if(getEntitiesList.isEmpty()){
+            noSongs.visibility = View.VISIBLE
+        }else{
+            noSongs.visibility = View.INVISIBLE
+        }
 
         for (i in getEntitiesList.indices){
             val songListObject = getEntitiesList[i]

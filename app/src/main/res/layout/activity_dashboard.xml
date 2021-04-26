@@ -25,7 +25,7 @@
                 android:minHeight="?attr/actionBarSize"
                 android:background="@color/color_primary"
                 app:titleTextColor="@color/white"
-                app:layout_scrollFlags="scroll|enterAlways">
+                >
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>

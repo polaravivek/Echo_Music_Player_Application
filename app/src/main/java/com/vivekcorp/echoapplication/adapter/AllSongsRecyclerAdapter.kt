@@ -50,6 +50,7 @@ class AllSongsRecyclerAdapter(val context: Context, private val itemList: ArrayL
             args.putLong("songDate",songs.dateAdded)
             args.putParcelableArrayList("songData", itemList)
             nowPlayingFragment.arguments = args
+
             (context as FragmentActivity).supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.frame, nowPlayingFragment)
