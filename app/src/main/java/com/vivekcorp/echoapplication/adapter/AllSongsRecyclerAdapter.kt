@@ -45,7 +45,7 @@ class AllSongsRecyclerAdapter(val context: Context, private val itemList: ArrayL
                 args.putString("songArtist", songs.artist)
                 args.putString("path", songs.songData)
                 args.putString("songTitle", songs.songTitle)
-                args.putInt("songId", songs.songID.toInt() as Int)
+                args.putInt("songId", songs.songID.toInt())
                 args.putInt("songPosition", position)
                 args.putParcelableArrayList("songData", itemList)
                 nowPlayingFragment.arguments = args
