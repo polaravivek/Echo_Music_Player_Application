@@ -62,24 +62,18 @@ class AllSongsFragment : Fragment() {
 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
+        activity?.title = "All songs"
+
         hiddenBarMainScreen = view.findViewById(R.id.hiddenBarMainScreen)
         songTitle = view?.findViewById(R.id.nowPlaying)
         playPauseButton = view.findViewById(R.id.playPauseButton)
         setHasOptionsMenu(true)
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                activity?.finish()
-            }
-        }
 
         if (NowPlayingFragment.Statified.mediaPlayer?.isPlaying == true) {
             hiddenBarMainScreen.visibility = View.VISIBLE
         } else if(NowPlayingFragment.Statified.mediaPlayer?.isPlaying == false){
             hiddenBarMainScreen.visibility = View.VISIBLE
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
 
         layoutManager = LinearLayoutManager(activity)
 
@@ -116,7 +110,6 @@ class AllSongsFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         getSongsList = getAllAudioFromDevice(this)

@@ -75,8 +75,6 @@ class DashboardActivity : AppCompatActivity() {
                         .addToBackStack("FavoritesFragment")
                         .commit()
 
-                    supportActionBar?.title = "Favorites songs"
-
                     drawerLayout.closeDrawers()
                 }
                 R.id.settings -> {
@@ -101,9 +99,7 @@ class DashboardActivity : AppCompatActivity() {
             }
 
             return@setNavigationItemSelectedListener true
-
         }
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -120,7 +116,6 @@ class DashboardActivity : AppCompatActivity() {
     private fun setUpToolbar() {
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Toolbar Title"
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -132,7 +127,6 @@ class DashboardActivity : AppCompatActivity() {
             .addToBackStack("AllSongsFragment")
             .commit()
 
-        supportActionBar?.title = "All Songs"
         navigationView.setCheckedItem(R.id.allSongs)
     }
 

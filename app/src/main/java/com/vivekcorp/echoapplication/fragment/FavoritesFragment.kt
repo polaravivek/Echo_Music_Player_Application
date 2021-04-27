@@ -54,6 +54,7 @@ class FavoritesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_favorites, container, false)
 
         setHasOptionsMenu(true)
+        activity?.title = "Favorites"
 
         layoutManager = LinearLayoutManager(activity)
 
