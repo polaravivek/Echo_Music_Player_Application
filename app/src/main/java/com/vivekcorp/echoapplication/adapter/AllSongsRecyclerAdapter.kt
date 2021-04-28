@@ -54,6 +54,7 @@ class AllSongsRecyclerAdapter(val context: Context, private val itemList: ArrayL
             (context as FragmentActivity).supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.frame, nowPlayingFragment)
+                .addToBackStack("NowPlayingFragment")
                 .commit()
 
         }

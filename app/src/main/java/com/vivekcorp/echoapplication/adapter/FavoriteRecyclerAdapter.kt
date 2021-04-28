@@ -57,6 +57,7 @@ class FavoriteRecyclerAdapter(val context: Context,val itemList: ArrayList<Audio
     }
 
     override fun getItemCount(): Int {
+        println(itemList)
         return itemList.size
     }
 }

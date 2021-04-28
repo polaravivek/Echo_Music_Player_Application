@@ -19,6 +19,7 @@
             android:id="@+id/hiddenBarMainScreen"
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:background="@color/color_primary"
             android:layout_alignParentBottom="true"
             android:visibility="invisible">
 
@@ -43,7 +44,7 @@
                 android:minWidth="0dp" />
 
             <TextView
-                android:id="@+id/nowPlaying"
+                android:id="@+id/songTitleMainScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -53,12 +54,12 @@
                 android:textColor="#bdbdbd" />
 
             <TextView
-                android:id="@+id/songTitleMainScreen"
+                android:id="@+id/nowPlaying"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/nowPlaying"
-                android:layout_alignStart="@+id/nowPlaying"
-                android:layout_below="@+id/nowPlaying"
+                android:layout_alignLeft="@+id/songTitleMainScreen"
+                android:layout_alignStart="@+id/songTitleMainScreen"
+                android:layout_below="@+id/songTitleMainScreen"
                 android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"

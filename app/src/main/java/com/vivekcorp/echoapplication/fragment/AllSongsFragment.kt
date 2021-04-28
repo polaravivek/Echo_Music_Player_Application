@@ -11,8 +11,10 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -139,6 +141,25 @@ class AllSongsFragment : Fragment() {
         bottomBarSetup()
     }
 
+    override fun onDestroy() {
+        activity?.finish()
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        println("resume")
+        super.onResume()
+    }
+
+    override fun onDetach() {
+        println("ondetach")
+        super.onDetach()
+    }
+
+//    override fun onDetach() {
+//        activity?.finish()
+//        super.onDetach()
+//    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         val switcher = item.itemId

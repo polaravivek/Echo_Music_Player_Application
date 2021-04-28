@@ -75,25 +75,27 @@ class DashboardActivity : AppCompatActivity() {
                         .addToBackStack("FavoritesFragment")
                         .commit()
 
+                    navigationView.setCheckedItem(R.id.allSongs)
+
                     drawerLayout.closeDrawers()
                 }
                 R.id.settings -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame, SettingsFragment())
-
+                        .addToBackStack("SettingFragment")
                         .commit()
 
-                    supportActionBar?.title = "Settings"
+                    navigationView.setCheckedItem(R.id.allSongs)
                     drawerLayout.closeDrawers()
                 }
                 R.id.aboutUs -> {
 
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame, AboutUsFragment())
-
+                        .addToBackStack("AboutUsFragment")
                         .commit()
 
-                    supportActionBar?.title = "About us"
+                    navigationView.setCheckedItem(R.id.allSongs)
                     drawerLayout.closeDrawers()
                 }
             }
@@ -131,13 +133,10 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        val fragments = fragmentManager.backStackEntryCount
+        if (fragments == 1) {
 
-        val frag = supportFragmentManager.findFragmentById(R.id.frame)
-
-        when (frag) {
-            !is AllSongsFragment -> openAllSongs()
-
-            else -> super.onBackPressed()
         }
+        super.onBackPressed()
     }
 }
