@@ -37,7 +37,7 @@ class AllSongsFragment : Fragment() {
     lateinit var hiddenBarMainScreen: RelativeLayout
 
     var visibleLayout: RelativeLayout? = null
-    var noSongs: RelativeLayout? = null
+    lateinit var noSongs: RelativeLayout
     var songTitle: TextView? = null
     var playPauseButton: ImageButton? = null
     var trackPosition: Int = 0
@@ -81,13 +81,20 @@ class AllSongsFragment : Fragment() {
 
         visibleLayout = view?.findViewById(R.id.visibleLayout)
 
-        noSongs = view?.findViewById(R.id.noSongs)
+        noSongs = view.findViewById(R.id.noSongs)
 
         recyclerAllSongsView = view.findViewById(R.id.recyclerAllSongsView)
 
         myActivity = context as Activity
 
         getSongsList = getAllAudioFromDevice(this@AllSongsFragment)
+
+
+        if(getSongsList.isEmpty()){
+            noSongs.visibility = View.VISIBLE
+        }else{
+            noSongs.visibility = View.INVISIBLE
+        }
 
         recyclerAllSongsView.addItemDecoration(
             DividerItemDecoration(
@@ -147,12 +154,10 @@ class AllSongsFragment : Fragment() {
     }
 
     override fun onResume() {
-        println("resume")
         super.onResume()
     }
 
     override fun onDetach() {
-        println("ondetach")
         super.onDetach()
     }
 
