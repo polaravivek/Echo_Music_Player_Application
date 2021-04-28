@@ -62,7 +62,7 @@ class AllSongsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        // Inflate the layout for this fragment
+
         val view = inflater.inflate(R.layout.fragment_all_songs, container, false)
         activity?.title = "All songs"
 
@@ -153,18 +153,7 @@ class AllSongsFragment : Fragment() {
         super.onDestroy()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
-//    override fun onDetach() {
-//        activity?.finish()
-//        super.onDetach()
-//    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         val switcher = item.itemId

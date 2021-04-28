@@ -257,11 +257,9 @@ class NowPlayingFragment : Fragment() {
                 }
 
                 override fun onStartTrackingTouch(seek: SeekBar) {
-                    // write custom code for progress is started
                 }
 
                 override fun onStopTrackingTouch(seek: SeekBar) {
-
                     mediaPlayer.seekTo(seek.progress)
                 }
             })

@@ -55,17 +55,12 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED
                     || grantResults[1] != PackageManager.PERMISSION_GRANTED
                     || grantResults[2] != PackageManager.PERMISSION_GRANTED) {
-
-                    Log.i("permission", "Permission has been denied by user")
-
                 }else{
                     Handler().postDelayed({
                         val startAct = Intent(this@MainActivity, DashboardActivity::class.java)
                         startActivity(startAct)
                         this.finish()
                     },1000)
-
-                    Log.i("permission", "Permission has been granted by user")
                 }
             }
         }
